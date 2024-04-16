@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Bhagavad Gita</string>
+    <string name="loading">Loading</string>
+    <string name="no_connection">No connection</string>
+    <string name="failed_to_load">Failed to Load</string>
+    <string name="app_background">app background</string>
+    <string name="shlok_of_the_day">Shlok of The Day</string>
+    <string name="start_reading">Start Reading</string>
+    <string name="chapter_s">Chapter:%s</string>
+    <string name="shlok_s">Shlok:%s</string>
+    <string name="retry">Retry</string>
+    <string name="chapters">Chapters</string>
+    <string name="chapter_english">(%s)</string>
+    <string name="total_verses">Total Shloks:%s</string>
+    <string name="chapter_name">%s(%s)</string>
+    <string name="expand_button_content_description">See more and less information about the chapter</string>
+    <string name="meaning">Meaning:  </string>
+    <string name="summary">Summary:  </string>
+    <string name="total_shloks">Total Shloks:</string>
+    <string name="read_shloks">Read Shloks</string>
+</resources>
