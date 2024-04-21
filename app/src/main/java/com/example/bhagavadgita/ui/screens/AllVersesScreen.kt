@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -28,6 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bhagavadgita.R
 import com.example.bhagavadgita.model.BhagavadGitaVerse
 import com.example.bhagavadgita.ui.theme.orange
@@ -53,7 +58,8 @@ fun AllVersesScreen(
                 .padding(dimensionResource(id = R.dimen.padding_medium))
         )
         is BhagavadGitaUiState.Success -> VersesList(
-            verses = bhagavadGitaUiState.verses!!,
+            verses = bhagavadGitaUiState.versesPager!!.collectAsLazyPagingItems(),
+            onRetryButtonClicked = onRetryButtonClicked,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(dimensionResource(id = R.dimen.padding_medium))
@@ -63,24 +69,62 @@ fun AllVersesScreen(
 
 @Composable
 fun VersesList(
-    verses: List<BhagavadGitaVerse>,
+    verses: LazyPagingItems<BhagavadGitaVerse>,
+    onRetryButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(
-            count = verses.size,
-            key = {
-                verses[it].id
-            }
-        ){index->
-            VerseCard(
-                verse = verses[index],
-                modifier = Modifier
+    when(verses.loadState.refresh){
+        is LoadState.Loading -> {
+            Box(
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_small))
-            )
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_medium))
+                        .align(Alignment.Center)
+                        .size(100.dp),
+                    color = red,
+                    strokeWidth = 4.dp
+                )
+            }
+        }
+        is LoadState.Error -> ErrorScreen(
+            onRetryButtonClicked = onRetryButtonClicked,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_medium))
+        )
+        is LoadState.NotLoading -> {
+            LazyColumn(
+                modifier = modifier
+            ) {
+                items(
+                    count = verses.itemCount,
+                    key = {
+                        verses[it]!!.id
+                    }
+                ){index->
+                    VerseCard(
+                        verse = verses[index]!!,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = dimensionResource(id = R.dimen.padding_small))
+                    )
+                }
+                item {
+                    if(verses.loadState.append is LoadState.Loading){
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = red
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

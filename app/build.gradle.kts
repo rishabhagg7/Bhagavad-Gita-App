@@ -61,13 +61,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //view model
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //navigation
     implementation(libs.androidx.navigation.compose)
+    //retrofit
     implementation(libs.retrofit)
+    //serialization
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+    //ok http
     implementation(libs.okhttp)
     implementation(libs.androidx.material.icons.extended)
+    //pagination
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

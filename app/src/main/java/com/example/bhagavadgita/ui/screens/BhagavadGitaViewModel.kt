@@ -1,5 +1,6 @@
 package com.example.bhagavadgita.ui.screens
 
+import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,11 +10,15 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.bhagavadgita.BhagavadGitaApplication
 import com.example.bhagavadgita.data.BhagavadGitaRepository
 import com.example.bhagavadgita.model.BhagavadGitaChapter
 import com.example.bhagavadgita.model.BhagavadGitaVerse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -48,7 +53,7 @@ sealed interface BhagavadGitaUiState{
         val chapters: List<BhagavadGitaChapter>? = null,
         val verseOfTheDay: BhagavadGitaVerse? = null,
         val selectedChapterNumber: Int? = null,
-        val verses: List<BhagavadGitaVerse>? = null
+        val versesPager: Flow<PagingData<BhagavadGitaVerse>>? = null
     ):BhagavadGitaUiState
     data object Error: BhagavadGitaUiState
     data object Loading: BhagavadGitaUiState
@@ -61,7 +66,6 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
 
     private lateinit var todayVerse: BhagavadGitaVerse
     private var chapters: List<BhagavadGitaChapter> = listOf()
-    private var verses: List<BhagavadGitaVerse> = listOf()
     private var selectedChapterNumber = 1
 
     init {
@@ -76,8 +80,7 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
                 chapters = result
                 BhagavadGitaUiState.Success(
                     verseOfTheDay = todayVerse,
-                    chapters = result,
-                    verses = verses
+                    chapters = result
                 )
             }catch (e: IOException){
                 BhagavadGitaUiState.Error
@@ -97,16 +100,15 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
         bhagavadGitaUiState = BhagavadGitaUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             bhagavadGitaUiState = try{
-                val result: MutableList<BhagavadGitaVerse>  = mutableListOf()
-                for(verseNumber in 1..bhagavadGitaVersesCount[selectedChapterNumber-1]){
-                    result.add(bhagavadGitaRepository.getBhagavadGitaVerse(selectedChapterNumber,verseNumber))
-                }
-                verses = result
+                val versesPager = Pager(PagingConfig(pageSize = PAGE_SIZE)){
+                    VersesPagingSource(bhagavadGitaRepository,selectedChapterNumber,
+                        bhagavadGitaVersesCount[selectedChapterNumber-1])
+                }.flow
                 BhagavadGitaUiState.Success(
                     chapters = chapters,
                     verseOfTheDay = todayVerse,
                     selectedChapterNumber = selectedChapterNumber,
-                    verses = result
+                    versesPager = versesPager
                 )
             }catch (e: IOException){
                 BhagavadGitaUiState.Error

@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -15,14 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -82,8 +81,7 @@ fun HomeDisplayScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
+        modifier = modifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,19 +91,21 @@ fun HomeDisplayScreen(
             VerseOfTheDay(
                 bhagavadGitaVerse = bhagavadGitaVerse
             )
-            Button(
-                onClick = onStartButtonClicked,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = orange,
-                    contentColor = Color.White
-                ),
-                shape = shapes.small
-            ) {
-                Text(
-                    text = stringResource(R.string.start_reading),
-                    fontSize = 16.sp
-                )
-            }
+        }
+        Button(
+            onClick = onStartButtonClicked,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = orange,
+                contentColor = Color.White
+            ),
+            shape = shapes.small,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+        ) {
+            Text(
+                text = stringResource(R.string.start_reading),
+                fontSize = 16.sp
+            )
         }
     }
 }
@@ -115,9 +115,6 @@ fun VerseOfTheDay(
     bhagavadGitaVerse: BhagavadGitaVerse,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember{
-        mutableStateOf(false)
-    }
     OutlinedCard(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -148,14 +145,6 @@ fun VerseOfTheDay(
                         color = Color.White
                     )
                 }
-                ExpandableButton(
-                    expanded = expanded,
-                    onClick = {
-                        expanded = !expanded
-                    },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                )
             }
             VerseSection(
                 verse = bhagavadGitaVerse.slok,
@@ -174,20 +163,19 @@ fun VerseOfTheDay(
                 color = red,
                 fontWeight = FontWeight.Bold
             )
-            if(expanded) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = red
-                            )
-                        ) {
-                            append(bhagavadGitaVerse.chinmay.hc)
-                        }
-                    },
-                    textAlign = TextAlign.Justify
-                )
-            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = red
+                        )
+                    ) {
+                        append(bhagavadGitaVerse.chinmay.hc)
+                    }
+                },
+                textAlign = TextAlign.Justify
+            )
         }
     }
 }
@@ -284,9 +272,13 @@ fun ErrorScreen(
 fun LoadingScreen(
     modifier: Modifier = Modifier
 ) {
-    Image(
-        painter = painterResource(id = R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading),
-        modifier = modifier.size(200.dp)
-    )
+    Box(modifier = modifier) {
+        CircularProgressIndicator(
+            color = red,
+            strokeWidth = 4.dp,
+            modifier = Modifier
+                .size(100.dp)
+                .align(Alignment.Center)
+        )
+    }
 }
