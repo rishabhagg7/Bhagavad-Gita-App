@@ -1,6 +1,7 @@
 package com.example.bhagavadgita.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -121,6 +122,25 @@ fun VersesList(
                             CircularProgressIndicator(
                                 color = red
                             )
+                        }
+                    }
+                    if(verses.loadState.append is LoadState.Error){
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator(
+                                    color = red
+                                )
+                                Text(
+                                    text = stringResource(R.string.connection_lost),
+                                    color = red
+                                )
+                            }
                         }
                     }
                 }

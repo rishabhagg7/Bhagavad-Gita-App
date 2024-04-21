@@ -1,5 +1,8 @@
 package com.example.bhagavadgita.ui.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,7 +112,13 @@ fun ChapterCard(
         mutableStateOf(false)
     }
     OutlinedCard(
-        modifier = modifier,
+        modifier = modifier
+            .animateContentSize(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium
+            )
+        ),
         colors = CardDefaults.cardColors(
             containerColor = yellow
         ),

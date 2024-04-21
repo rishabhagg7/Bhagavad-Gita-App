@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.bhagavadgita.BhagavadGitaApplication
 import com.example.bhagavadgita.data.BhagavadGitaRepository
 import com.example.bhagavadgita.model.BhagavadGitaChapter
@@ -103,7 +104,7 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
                 val versesPager = Pager(PagingConfig(pageSize = PAGE_SIZE)){
                     VersesPagingSource(bhagavadGitaRepository,selectedChapterNumber,
                         bhagavadGitaVersesCount[selectedChapterNumber-1])
-                }.flow
+                }.flow.cachedIn(viewModelScope)
                 BhagavadGitaUiState.Success(
                     chapters = chapters,
                     verseOfTheDay = todayVerse,

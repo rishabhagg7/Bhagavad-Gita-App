@@ -18,4 +18,5 @@
     <string name="summary">Summary:  </string>
     <string name="total_shloks">Total Shloks:</string>
     <string name="read_shloks">Read Shloks</string>
+    <string name="connection_lost">Connection Lost</string>
 </resources>
