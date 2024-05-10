@@ -214,7 +214,8 @@ fun ChapterDetailsSection(
                     append(chapter.meaning.hi)
                 }
             },
-            textAlign = TextAlign.Justify
+            textAlign = TextAlign.Justify,
+            color = Color.Black
         )
         Text(
             text = buildAnnotatedString {
@@ -227,7 +228,8 @@ fun ChapterDetailsSection(
                     append(chapter.summary.hi)
                 }
             },
-            textAlign = TextAlign.Justify
+            textAlign = TextAlign.Justify,
+            color = Color.Black
         )
     }
 }
