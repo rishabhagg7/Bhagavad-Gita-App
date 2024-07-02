@@ -4,8 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,7 +46,9 @@ fun BhagavadGitaApp()
     Scaffold(
         topBar = {
             BhagavadGitaTopAppBar(
-                currentScreenTitle = currentScreenTitle
+                currentScreenTitle = currentScreenTitle,
+                canNavigateBack = bhagavadGitaNavController.previousBackStackEntry != null,
+                onNavigateUp = { bhagavadGitaNavController.navigateUp() }
             )
         }
     ) {innerPadding->
@@ -104,7 +110,9 @@ fun AppBackground(
 @Composable
 fun BhagavadGitaTopAppBar(
     currentScreenTitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    canNavigateBack: Boolean = false,
+    onNavigateUp: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -119,6 +127,16 @@ fun BhagavadGitaTopAppBar(
             navigationIconContentColor = Color.White,
             actionIconContentColor = Color.White
         ),
-        modifier = modifier
+        modifier = modifier,
+        navigationIcon = {
+            if(canNavigateBack){
+                IconButton(onClick = onNavigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            }
+        }
     )
 }

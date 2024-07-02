@@ -15,6 +15,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.bhagavadgita.BhagavadGitaApplication
+import com.example.bhagavadgita.data.AuthRepository
 import com.example.bhagavadgita.data.BhagavadGitaRepository
 import com.example.bhagavadgita.model.BhagavadGitaChapter
 import com.example.bhagavadgita.model.BhagavadGitaVerse
@@ -61,7 +62,10 @@ sealed interface BhagavadGitaUiState{
 }
 
 
-class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepository): ViewModel() {
+class BhagavadGitaViewModel(
+    private val bhagavadGitaRepository: BhagavadGitaRepository,
+    private val authRepository: AuthRepository
+): ViewModel() {
     var bhagavadGitaUiState: BhagavadGitaUiState by mutableStateOf(BhagavadGitaUiState.Loading)
         private set
 
@@ -71,6 +75,17 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
 
     init {
         getVerseOfTheDay()
+//        viewModelScope.launch(Dispatchers.IO) {
+//            try {
+//                val userRequest = UserRequest(email = "eve.holt@reqres.in", password = "pistol")
+//                val result = authRepository.registerUser(userRequest)
+//                Log.d("check", result.body().toString())
+//            }catch (e: IOException){
+//                Log.d("check", "${e.message}")
+//            }catch (e: HttpException){
+//                Log.d("check", "${e.message}")
+//            }
+//        }
     }
 
      fun getChapters() {
@@ -169,7 +184,8 @@ class BhagavadGitaViewModel(private val bhagavadGitaRepository: BhagavadGitaRepo
             initializer {
                 val application = (this[APPLICATION_KEY] as BhagavadGitaApplication)
                 val bhagavadGitaRepository = application.container.bhagavadGitaRepository
-                BhagavadGitaViewModel(bhagavadGitaRepository = bhagavadGitaRepository)
+                val authRepository = application.container.authRepository
+                BhagavadGitaViewModel(bhagavadGitaRepository = bhagavadGitaRepository, authRepository = authRepository)
             }
         }
     }

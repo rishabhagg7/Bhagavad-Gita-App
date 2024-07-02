@@ -18,6 +18,7 @@ data class BhagavadGitaVerse(
     val madhav: Madhav,
     val ms: Ms,
     val neel: Neel,
+    val prabhu: Prabhu,
     val purohit: Purohit,
     val puru: Puru,
     val raman: Raman,
