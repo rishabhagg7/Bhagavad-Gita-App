@@ -13,7 +13,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer: AppContainer{
-    private val BASE_URL = "https://bhagavadgitaapi.in"
+    private val BASE_URL = "https://vedicscriptures.github.io/"
     private val retrofit = Retrofit
         .Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
